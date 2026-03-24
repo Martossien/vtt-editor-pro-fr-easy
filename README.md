@@ -461,8 +461,6 @@ This project is licensed under the **Creative Commons Attribution-NonCommercial 
 
 **RDTvlokip (Théo)**
 - 🧬 Creator of [AG-BPE](https://zenodo.org/records/16739553) (Attention-Guided Byte Pair Encoding)
-- 🤖 Developer of InfiniGPT model family
-- 🎓 TSSR Student specializing in Network Administration
 - 🔗 GitHub: [@RDTvlokip](https://github.com/RDTvlokip)
 
 ---
