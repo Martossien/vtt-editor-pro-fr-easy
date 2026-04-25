@@ -5061,14 +5061,12 @@
                     return;
                 }
 
-                // Sinon, aller au début du segment et lancer la lecture
+                // Sinon, aller au début du segment et lancer (ou relancer) la lecture
                 wavesurfer.seekTo(cue.start / wavesurfer.getDuration());
-                if (!isPlaying) {
-                    wavesurfer.play();
-                    isPlaying = true;
-                    elements.playBtn.textContent = "⏸️ Pause";
-                    if (elements.transportPlay) elements.transportPlay.textContent = "⏸";
-                }
+                wavesurfer.play();
+                isPlaying = true;
+                elements.playBtn.textContent = "⏸️ Pause";
+                if (elements.transportPlay) elements.transportPlay.textContent = "⏸";
             }
 
             function clearForm() {
