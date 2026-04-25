@@ -2471,10 +2471,243 @@
             font-weight: 600;
         }
 
+        /* === V4 — Save indicator === */
+        .save-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: #1a3a2a;
+            border: 1px solid #1db954;
+            color: #1db954;
+        }
+        .save-indicator.saving { color: #f9ca24; border-color: #f9ca24; background: #2a2a1a; }
+        .save-indicator.saved { color: #1db954; border-color: #1db954; }
+        .save-indicator.error { color: #ff6b6b; border-color: #ff6b6b; background: #2a1a1a; }
+
+        /* === V4 — Debug panel === */
+        .debug-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 420px;
+            height: 100vh;
+            background: #0d0d0d;
+            border-left: 2px solid #333;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.25s ease;
+            font-family: 'Courier New', monospace;
+        }
+        .debug-panel.open { transform: translateX(0); }
+        .debug-panel-header {
+            padding: 12px 16px;
+            background: #1a1a1a;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #aaa;
+        }
+        .debug-panel-header strong { color: #1db954; }
+        .debug-panel-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            font-size: 11px;
+            line-height: 1.5;
+            color: #aaa;
+        }
+        .debug-log-line { padding: 2px 0; border-bottom: 1px solid #1a1a1a; word-break: break-all; }
+        .debug-log-api { color: #54a0ff; }
+        .debug-log-event { color: #1db954; }
+        .debug-log-error { color: #ff6b6b; }
+        .debug-log-server { color: #a855f7; }
+        .debug-panel-footer {
+            padding: 8px 16px;
+            background: #1a1a1a;
+            border-top: 1px solid #333;
+            display: flex;
+            gap: 10px;
+        }
+        .debug-panel-footer button {
+            background: #282828;
+            border: 1px solid #444;
+            color: #aaa;
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        .debug-panel-footer button:hover { background: #333; color: #fff; }
+
+        /* === V4 — Import report === */
+        .import-report {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,.8);
+            z-index: 9998;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .import-report.open { display: flex; }
+        .import-report-content {
+            background: #1a1a1a;
+            border: 2px solid #1db954;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+        .import-report-content h2 { color: #1db954; margin: 0 0 15px; }
+        .import-report-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .import-stat {
+            background: #282828;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .import-stat-value { font-size: 22px; font-weight: bold; color: #1db954; }
+        .import-stat-label { font-size: 11px; color: #888; margin-top: 2px; }
+        .import-report-warnings { margin-bottom: 20px; }
+        .import-warning-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            background: #282828;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            font-size: 12px;
+            color: #b3b3b3;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .import-warning-item:hover { background: #333; }
+        .import-warning-item.warning { border-left: 3px solid #f9ca24; }
+        .import-warning-item.error { border-left: 3px solid #ff6b6b; }
+        .import-warning-item.info { border-left: 3px solid #54a0ff; }
+
+        /* === V4 — Nudge buttons === */
+        .nudge-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            margin-top: 6px;
+        }
+        .nudge-btn {
+            padding: 3px 8px;
+            background: #282828;
+            border: 1px solid #404040;
+            border-radius: 4px;
+            color: #b3b3b3;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .nudge-btn:hover { background: #333; border-color: #1db954; color: #fff; }
+        .nudge-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        /* === V4 — Inline speaker dropdown === */
+        .speaker-inline-dropdown {
+            position: absolute;
+            background: #1a1a1a;
+            border: 1px solid #404040;
+            border-radius: 8px;
+            padding: 4px;
+            min-width: 160px;
+            z-index: 5000;
+            box-shadow: 0 4px 16px rgba(0,0,0,.6);
+            display: none;
+        }
+        .speaker-inline-dropdown .sp-option {
+            padding: 6px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #ccc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.15s;
+        }
+        .speaker-inline-dropdown .sp-option:hover { background: #282828; }
+        .speaker-inline-dropdown .sp-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* === V4 — Upload progress === */
+        .upload-progress {
+            width: 100%;
+            height: 6px;
+            background: #282828;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+        .upload-progress-bar {
+            height: 100%;
+            background: #1db954;
+            width: 0;
+            transition: width 0.2s;
+        }
+
         </style>
     </head>
     <body>
         <div class="toast-container" id="toast-container"></div>
+
+        <!-- V4 — Debug Panel -->
+        <div class="debug-panel" id="debug-panel">
+            <div class="debug-panel-header">
+                <span>🐛 <strong>Debug Panel</strong></span>
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <span id="debug-count" style="font-size:10px;color:#666;">0</span>
+                    <button id="debug-close" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:16px;">×</button>
+                </div>
+            </div>
+            <div class="debug-panel-body" id="debug-body"></div>
+            <div class="debug-panel-footer">
+                <button id="debug-copy">📋 Copier les logs</button>
+                <button id="debug-clear">🗑️ Clear</button>
+                <span id="debug-status" style="font-size:10px;color:#666;margin-left:auto;"></span>
+            </div>
+        </div>
+
+        <!-- V4 — Import Report -->
+        <div class="import-report" id="import-report">
+            <div class="import-report-content">
+                <div class="modal-header">
+                    <h2>📊 Rapport d'import</h2>
+                    <button class="modal-close" id="close-import-report">×</button>
+                </div>
+                <div class="import-report-stats" id="import-stats"></div>
+                <h4 style="color:#b3b3b3;margin-bottom:10px;">⚠️ Warnings</h4>
+                <div class="import-report-warnings" id="import-warnings"></div>
+                <p style="color:#666;font-size:11px;">Cliquez sur un warning pour aller au segment concerné.</p>
+            </div>
+        </div>
 
         <!-- V2.1 - Batch Edit Modal -->
         <div id="batch-modal" class="modal-overlay">
@@ -2935,6 +3168,11 @@
                 border-radius:6px;padding:4px 10px;
                 cursor:pointer;font-size:12px;font-weight:600;
             ">🎤 Gérer les locuteurs</button>
+            <span class="save-indicator" id="save-indicator" title="État de la sauvegarde">✅ Sauvegardé</span>
+            <button id="debug-btn" style="
+                background:#333;color:#aaa;border:1px solid #444;
+                border-radius:6px;padding:4px 8px;cursor:pointer;font-size:11px;
+            " title="Debug panel">🐛</button>
         </div>
     </div>
 
@@ -3049,7 +3287,27 @@
                                 </div>
                             </div>
                             <div class="form-group mark-buttons">
-                                    <button id="replay-cue-btn" class="btn btn-secondary" title="Réécouter le segment" style="width:100%;background:#1a4a2a;border:1px solid #1db954;color:#1db954;font-weight:600;">🔁 Réécouter ce segment</button>
+                                    <button id="replay-cue-btn" class="btn btn-secondary" title="Reecouter le segment" style="width:100%;background:#1a4a2a;border:1px solid #1db954;color:#1db954;font-weight:600;">🔁 Reecouter ce segment</button>
+                            </div>
+
+                            <!-- V4 — Nudge buttons -->
+                            <div class="nudge-row">
+                                <span style="font-size:11px;color:#888;margin-right:4px;">Debut:</span>
+                                <button class="nudge-btn" id="nudge-start-minus-1s" disabled>-1s</button>
+                                <button class="nudge-btn" id="nudge-start-minus-500ms" disabled>-500ms</button>
+                                <button class="nudge-btn" id="nudge-start-minus-100ms" disabled>-100ms</button>
+                                <button class="nudge-btn" id="nudge-start-plus-100ms" disabled>+100ms</button>
+                                <button class="nudge-btn" id="nudge-start-plus-500ms" disabled>+500ms</button>
+                                <button class="nudge-btn" id="nudge-start-plus-1s" disabled>+1s</button>
+                            </div>
+                            <div class="nudge-row">
+                                <span style="font-size:11px;color:#888;margin-right:4px;">Fin:</span>
+                                <button class="nudge-btn" id="nudge-end-minus-1s" disabled>-1s</button>
+                                <button class="nudge-btn" id="nudge-end-minus-500ms" disabled>-500ms</button>
+                                <button class="nudge-btn" id="nudge-end-minus-100ms" disabled>-100ms</button>
+                                <button class="nudge-btn" id="nudge-end-plus-100ms" disabled>+100ms</button>
+                                <button class="nudge-btn" id="nudge-end-plus-500ms" disabled>+500ms</button>
+                                <button class="nudge-btn" id="nudge-end-plus-1s" disabled>+1s</button>
                             </div>
 
                             <div class="form-group">
@@ -3082,9 +3340,10 @@
                             <div class="advanced-edit-section">
                                 <h4>✂️ Advanced Editing</h4>
                                 <div class="advanced-edit-buttons">
-                                    <button id="split-cue-btn" class="btn-edit-tool split" disabled title="Divide the selected cue at the cursor position">✂️ Split</button>
-                                    <button id="merge-cues-btn" class="btn-edit-tool merge" disabled title="Merge 2 consecutive selected cues into one">🔗 Fusionner</button>
-                                    <button id="shift-timings-btn" class="btn-edit-tool shift" disabled title="Shift all timings by ±X seconds">⏱️ Shift All</button>
+                                    <button id="split-cue-btn" class="btn-edit-tool split" disabled title="Couper au curseur (raccourci C)">✂️ Couper ici</button>
+                                    <button id="merge-cues-btn" class="btn-edit-tool merge" disabled title="Fusionner 2 segments consecutifs">🔗 Fusionner</button>
+                                    <button id="shift-timings-btn" class="btn-edit-tool shift" disabled title="Decaler tous les timings">⏱️ Shift All</button>
+                                    <button id="shift-following-btn" class="btn-edit-tool shift" disabled title="Decaler les segments suivants">⏩ Decaler suivants</button>
                                 </div>
                             </div>
                         </div>
@@ -3132,16 +3391,17 @@
 
             <footer class="shortcuts-bar">
                 <div class="shortcut"><kbd>Space</kbd> Play/Pause</div>
-                <div class="shortcut"><kbd>←</kbd> -1s</div>
-                <div class="shortcut"><kbd>→</kbd> +1s</div>
-                <div class="shortcut"><kbd>Ctrl+S</kbd> Mark Start</div>
-                <div class="shortcut"><kbd>Ctrl+B</kbd> Mark End</div>
-                <div class="shortcut"><kbd>Ctrl+Enter</kbd> Add Cue</div>
+                <div class="shortcut"><kbd>←</kbd> Segment prec. + lecture</div>
+                <div class="shortcut"><kbd>→</kbd> Segment suiv. + lecture</div>
+                <div class="shortcut"><kbd>Entree</kbd> Valider + segment suiv.</div>
+                <div class="shortcut"><kbd>C</kbd> Couper au curseur</div>
+                <div class="shortcut"><kbd>Echap</kbd> Annuler edition</div>
                 <div class="shortcut"><kbd>Ctrl+Z</kbd> Undo</div>
                 <div class="shortcut"><kbd>Ctrl+Y</kbd> Redo</div>
+                <div class="shortcut"><kbd>Ctrl+S</kbd> Mark Start</div>
                 <div class="shortcut"><kbd>Delete</kbd> Delete Region</div>
                 <div class="shortcut"><kbd>M</kbd> Add Marker</div>
-                <div class="shortcut" style="color: #1db954">💡 Multi-track • Markers • Multi-format Export</div>
+                <div class="shortcut" style="color: #1db954">💡 Mode correction guidee</div>
             </footer>
         </div>
 
@@ -3226,6 +3486,11 @@
                 renderCues();
                 renderLyrics();
                 document.getElementById("speakers-modal").style.display = "none";
+                logDebug(`Speakers mis a jour: ${Object.keys(speakersMap).length} locuteurs`, "event");
+                if (projectId) {
+                    apiCall("POST", "/api/speakers", { project_id: projectId, speakersMap: speakersMap });
+                }
+                saveToHistory();
                 showToast("✅ Locuteurs mis à jour", "success");
             }
 
@@ -3242,6 +3507,10 @@
 
             let autoSaveInterval = null;
             let activeLyricId = null;
+            let projectId = null;              // V4 — ID du projet actif
+            let selectedForMerge = null;       // V4 — Segment pour fusion
+            let debugLogs = [];                // V4 — Logs du panneau debug
+            let serverPollInterval = null;     // V4 — Polling logs serveur
 
             const GAP_MINIMUM = 0.0001; // 0.1ms
 
@@ -3363,6 +3632,34 @@
                 gotoTimeInput: document.getElementById("goto-time-input"),
                 gotoTimeBtn: document.getElementById("goto-time-btn"),
                 cueSpeaker: document.getElementById("cue-speaker"),
+                // V4 — New elements
+                debugPanel: document.getElementById("debug-panel"),
+                debugBody: document.getElementById("debug-body"),
+                debugCount: document.getElementById("debug-count"),
+                debugClose: document.getElementById("debug-close"),
+                debugCopy: document.getElementById("debug-copy"),
+                debugClear: document.getElementById("debug-clear"),
+                debugStatus: document.getElementById("debug-status"),
+                debugBtn: document.getElementById("debug-btn"),
+                saveIndicator: document.getElementById("save-indicator"),
+                importReport: document.getElementById("import-report"),
+                importStats: document.getElementById("import-stats"),
+                importWarnings: document.getElementById("import-warnings"),
+                closeImportReport: document.getElementById("close-import-report"),
+                shiftFollowingBtn: document.getElementById("shift-following-btn"),
+                // Nudge buttons
+                nudgeStartMinus1s: document.getElementById("nudge-start-minus-1s"),
+                nudgeStartMinus500ms: document.getElementById("nudge-start-minus-500ms"),
+                nudgeStartMinus100ms: document.getElementById("nudge-start-minus-100ms"),
+                nudgeStartPlus100ms: document.getElementById("nudge-start-plus-100ms"),
+                nudgeStartPlus500ms: document.getElementById("nudge-start-plus-500ms"),
+                nudgeStartPlus1s: document.getElementById("nudge-start-plus-1s"),
+                nudgeEndMinus1s: document.getElementById("nudge-end-minus-1s"),
+                nudgeEndMinus500ms: document.getElementById("nudge-end-minus-500ms"),
+                nudgeEndMinus100ms: document.getElementById("nudge-end-minus-100ms"),
+                nudgeEndPlus100ms: document.getElementById("nudge-end-plus-100ms"),
+                nudgeEndPlus500ms: document.getElementById("nudge-end-plus-500ms"),
+                nudgeEndPlus1s: document.getElementById("nudge-end-plus-1s"),
             };
 
             function showToast(message, type = "info") {
@@ -3390,6 +3687,365 @@
                 setTimeout(() => {
                     toast.remove();
                 }, 5000);
+            }
+
+            // ═══════════════════════════════════════════════
+            // V4 — API & Debug Layer
+            // ═══════════════════════════════════════════════
+
+            function logDebug(msg, type = "event") {
+                const ts = new Date().toISOString().split("T")[1].slice(0, 12);
+                const entry = { ts, msg, type };
+                debugLogs.push(entry);
+                if (debugLogs.length > 500) debugLogs.shift();
+                const line = document.createElement("div");
+                line.className = `debug-log-line debug-log-${type}`;
+                line.textContent = `[${ts}] ${msg}`;
+                elements.debugBody.appendChild(line);
+                elements.debugBody.scrollTop = elements.debugBody.scrollHeight;
+                elements.debugCount.textContent = debugLogs.length;
+                if (elements.debugPanel.classList.contains("open")) {
+                    console.log(`[DEBUG ${type}] ${msg}`);
+                }
+            }
+
+            async function apiCall(method, url, data = null) {
+                const start = performance.now();
+                const options = { method, headers: {} };
+                let bodyPreview = "";
+                if (data) {
+                    if (data instanceof FormData) {
+                        options.body = data;
+                        bodyPreview = "[FormData]";
+                    } else {
+                        options.headers["Content-Type"] = "application/json";
+                        options.body = JSON.stringify(data);
+                        bodyPreview = JSON.stringify(data).substring(0, 200);
+                    }
+                }
+                logDebug(`API ${method} ${url} ${bodyPreview}`, "api");
+                try {
+                    const resp = await fetch(url, options);
+                    const elapsed = (performance.now() - start).toFixed(0);
+                    const json = await resp.json();
+                    logDebug(`API ${method} ${url} → ${resp.status} (${elapsed}ms)`, "api");
+                    if (!resp.ok) {
+                        logDebug(`API ERROR ${resp.status}: ${json.error || ""}`, "error");
+                    }
+                    return { ok: resp.ok, status: resp.status, data: json, elapsed };
+                } catch (err) {
+                    logDebug(`API FAIL ${method} ${url}: ${err.message}`, "error");
+                    console.error(err);
+                    return { ok: false, status: 0, data: null, error: err.message };
+                }
+            }
+
+            function setSaveIndicator(state) {
+                const el = elements.saveIndicator;
+                if (!el) return;
+                switch (state) {
+                    case "saving":
+                        el.className = "save-indicator saving";
+                        el.textContent = "⏳ Sauvegarde...";
+                        break;
+                    case "saved":
+                        el.className = "save-indicator saved";
+                        el.textContent = "✅ Sauvegarde";
+                        break;
+                    case "error":
+                        el.className = "save-indicator error";
+                        el.textContent = "❌ Erreur save";
+                        break;
+                }
+                if (saveIndicatorTimeout) clearTimeout(saveIndicatorTimeout);
+                if (state === "saved") {
+                    saveIndicatorTimeout = setTimeout(() => {
+                        el.textContent = "✅ Sauvegarde";
+                    }, 2000);
+                }
+            }
+
+            function updateNudgeButtons() {
+                const hasCue = !!currentCueId;
+                [
+                    elements.nudgeStartMinus1s, elements.nudgeStartMinus500ms,
+                    elements.nudgeStartMinus100ms, elements.nudgeStartPlus100ms,
+                    elements.nudgeStartPlus500ms, elements.nudgeStartPlus1s,
+                    elements.nudgeEndMinus1s, elements.nudgeEndMinus500ms,
+                    elements.nudgeEndMinus100ms, elements.nudgeEndPlus100ms,
+                    elements.nudgeEndPlus500ms, elements.nudgeEndPlus1s,
+                ].forEach(b => { if (b) b.disabled = !hasCue; });
+            }
+
+            async function saveToServer() {
+                if (!projectId) return;
+                const currentTrack = getCurrentTrack();
+                if (currentTrack) currentTrack.cues = JSON.parse(JSON.stringify(cues));
+                setSaveIndicator("saving");
+                logDebug(`Auto-save: ${cues.length} cues, ${Object.keys(speakersMap).length} speakers → /api/save`, "event");
+                const t0 = performance.now();
+                const result = await apiCall("POST", "/api/save", {
+                    project_id: projectId,
+                    cues: cues,
+                    speakersMap: speakersMap,
+                    markers: markers,
+                    tracks: tracks,
+                    currentTrackId: currentTrackId,
+                });
+                if (result.ok) {
+                    setSaveIndicator("saved");
+                    logDebug(`Auto-save OK (${(performance.now() - t0).toFixed(0)}ms)`, "event");
+                } else {
+                    setSaveIndicator("error");
+                    logDebug(`Auto-save FAILED: ${result.data?.error || result.error || "inconnu"}`, "error");
+                }
+            }
+
+            async function loadFromServer() {
+                logDebug("Chargement session serveur...", "event");
+                const t0 = performance.now();
+                const result = await apiCall("GET", "/api/session");
+                if (!result.ok || !result.data || !result.data.project_id) {
+                    logDebug("Aucune session trouvee sur le serveur", "event");
+                    return;
+                }
+                const d = result.data;
+                projectId = d.project_id;
+                logDebug(`Session: project=${d.project_id}, cues=${d.cues?.length || 0}, speakers=${Object.keys(d.speakersMap || {}).length}, audio=${d.audio_url ? "oui" : "non"}`, "event");
+                if (d.speakersMap) speakersMap = d.speakersMap;
+                if (d.markers && d.markers.length > 0) {
+                    markers = d.markers;
+                    const maxId = Math.max(0, ...markers.map(m => parseInt(m.id.split("-")[1]) || 0));
+                    markerIdCounter = maxId + 1;
+                    logDebug(`Markers restaures: ${markers.length} (next id: ${markerIdCounter})`, "event");
+                }
+                if (d.tracks && d.tracks.length > 0) {
+                    tracks = d.tracks;
+                    currentTrackId = d.currentTrackId || "default";
+                    renderTrackSelector();
+                    logDebug(`Tracks restaures: ${tracks.length}, courant: ${currentTrackId}`, "event");
+                }
+                if (d.cues && d.cues.length > 0 && cues.length === 0) {
+                    cues = d.cues;
+                    rebuildRegions();
+                    renderCues();
+                    renderLyrics();
+                    saveToHistory();
+                    rebuildSpeakersFromCues();
+                    rebuildSpeakerSelect();
+                    updateGuideSteps(2);
+                    showToast(`💾 ${cues.length} segments restaures`, "info");
+                    logDebug(`${cues.length} cues charges depuis session.json`, "event");
+                }
+                if (d.audio_url && !wavesurfer?.getDuration()) {
+                    logDebug(`Chargement audio depuis serveur: ${d.audio_url}`, "event");
+                    if (!wavesurfer) initWaveSurfer();
+                    wavesurfer.load(d.audio_url);
+                } else if (d.audio_url) {
+                    logDebug(`Audio deja charge (duration=${wavesurfer.getDuration().toFixed(1)}s), skip reload`, "event");
+                }
+                renderAllMarkers();
+                updateMarkerButtons();
+                logDebug(`loadFromServer termine en ${(performance.now() - t0).toFixed(0)}ms`, "event");
+            }
+
+            function showImportReport(stats, warnings) {
+                elements.importStats.innerHTML = `
+                    <div class="import-stat"><div class="import-stat-value">${stats.total_cues || 0}</div><div class="import-stat-label">Segments</div></div>
+                    <div class="import-stat"><div class="import-stat-value">${stats.total_duration || 0}s</div><div class="import-stat-label">Duree totale</div></div>
+                    <div class="import-stat"><div class="import-stat-value">${stats.total_speakers || 0}</div><div class="import-stat-label">Locuteurs</div></div>
+                    <div class="import-stat"><div class="import-stat-value" style="color:${stats.quality_score >= 80 ? '#1db954' : stats.quality_score >= 50 ? '#f9ca24' : '#ff6b6b'}">${stats.quality_score || 0}/100</div><div class="import-stat-label">Qualite</div></div>
+                `;
+                elements.importWarnings.innerHTML = "";
+                if (!warnings || warnings.length === 0) {
+                    elements.importWarnings.innerHTML = '<p style="color:#1db954;">✅ Aucun warning</p>';
+                } else {
+                    warnings.forEach(w => {
+                        const div = document.createElement("div");
+                        div.className = `import-warning-item ${w.severity || "warning"}`;
+                        div.innerHTML = `<span>${w.severity === "error" ? "❌" : "⚠️"}</span> ${w.message}`;
+                        if (w.cue_index !== undefined) {
+                            div.style.cursor = "pointer";
+                            div.addEventListener("click", () => {
+                                if (cues[w.cue_index]) {
+                                    editCue(cues[w.cue_index].id);
+                                    elements.importReport.classList.remove("open");
+                                }
+                            });
+                        }
+                        elements.importWarnings.appendChild(div);
+                    });
+                }
+                elements.importReport.classList.add("open");
+            }
+
+            // ═══════════════════════════════════════════════
+            // V4 — Navigation segments
+            // ═══════════════════════════════════════════════
+
+            function previousCue() {
+                if (!wavesurfer || cues.length === 0) return;
+                const currentTime = wavesurfer.getCurrentTime();
+                let targetIdx = -1;
+                for (let i = cues.length - 1; i >= 0; i--) {
+                    if (cues[i].end < currentTime - 0.05) { targetIdx = i; break; }
+                }
+                if (targetIdx >= 0) {
+                    const start = Math.max(0, cues[targetIdx].start - 1);
+                    wavesurfer.seekTo(start / wavesurfer.getDuration());
+                    if (!isPlaying) { wavesurfer.play(); isPlaying = true; elements.playBtn.textContent = "⏸️ Pause"; }
+                    editCue(cues[targetIdx].id);
+                    logDebug(`Navigation ← segment ${targetIdx + 1}/${cues.length}`, "event");
+                }
+            }
+
+            function nextCue() {
+                if (!wavesurfer || cues.length === 0) return;
+                const currentTime = wavesurfer.getCurrentTime();
+                let targetIdx = cues.length;
+                for (let i = 0; i < cues.length; i++) {
+                    if (cues[i].start > currentTime + 0.05) { targetIdx = i; break; }
+                }
+                if (targetIdx < cues.length) {
+                    const start = Math.max(0, cues[targetIdx].start - 1);
+                    wavesurfer.seekTo(start / wavesurfer.getDuration());
+                    if (!isPlaying) { wavesurfer.play(); isPlaying = true; elements.playBtn.textContent = "⏸️ Pause"; }
+                    editCue(cues[targetIdx].id);
+                    logDebug(`Navigation → segment ${targetIdx + 1}/${cues.length}`, "event");
+                }
+            }
+
+            // ═══════════════════════════════════════════════
+            // V4 — Split at cursor
+            // ═══════════════════════════════════════════════
+
+            function splitCueAtCursor() {
+                if (!wavesurfer || !currentCueId) return;
+                const currentTime = wavesurfer.getCurrentTime();
+                const cue = cues.find(c => c.id === currentCueId);
+                if (!cue) return;
+                if (currentTime <= cue.start + 0.1 || currentTime >= cue.end - 0.1) {
+                    showToast("Positionnez le curseur a l'interieur du segment", "warning");
+                    return;
+                }
+                const textParts = cue.text ? cue.text.split(" ") : [""];
+                const ratio = (currentTime - cue.start) / (cue.end - cue.start);
+                const splitIdx = Math.max(1, Math.floor(textParts.length * ratio));
+                const text1 = textParts.slice(0, splitIdx).join(" ");
+                const text2 = textParts.slice(splitIdx).join(" ");
+                const speakerPrefix = extractSpeaker(cue.text);
+                const cleanText1 = speakerPrefix ? stripSpeaker(text1) : text1;
+                const cleanText2 = speakerPrefix ? stripSpeaker(text2) : text2;
+                const id2 = generateCueId();
+                const newCue1 = {
+                    id: cue.id, start: cue.start, end: round3(currentTime),
+                    text: speakerPrefix ? `${speakerPrefix}: ${cleanText1}` : cleanText1,
+                    color: cue.color,
+                };
+                const newCue2 = {
+                    id: id2, start: round3(currentTime), end: cue.end,
+                    text: speakerPrefix ? `${speakerPrefix}: ${cleanText2}` : cleanText2,
+                    color: cue.color,
+                };
+                cues = cues.filter(c => c.id !== cue.id);
+                cues.push(newCue1, newCue2);
+                sortCues();
+                rebuildRegions();
+                renderCues();
+                renderLyrics();
+                saveToHistory();
+                currentCueId = id2;
+                editCue(id2);
+                showToast("Segment coupe en deux", "success");
+                logDebug(`Split cue ${cue.id} at ${currentTime.toFixed(3)}s`, "event");
+            }
+
+            function round3(v) { return Math.round(v * 1000) / 1000; }
+
+            // ═══════════════════════════════════════════════
+            // V4 — Inline speaker change
+            // ═══════════════════════════════════════════════
+
+            function showSpeakerInlineDropdown(cueId, el, event) {
+                event.stopPropagation();
+                const existing = document.querySelector(".speaker-inline-dropdown");
+                if (existing) existing.remove();
+                const dropdown = document.createElement("div");
+                dropdown.className = "speaker-inline-dropdown";
+                dropdown.style.display = "block";
+                const rect = el.getBoundingClientRect();
+                dropdown.style.top = (rect.bottom + 4) + "px";
+                dropdown.style.left = rect.left + "px";
+                const spNone = document.createElement("div");
+                spNone.className = "sp-option";
+                spNone.innerHTML = '<span class="sp-dot" style="background:#888;"></span> Aucun locuteur';
+                spNone.addEventListener("click", (e2) => {
+                    e2.stopPropagation();
+                    changeCueSpeaker(cueId, null);
+                    dropdown.remove();
+                });
+                dropdown.appendChild(spNone);
+                Object.entries(speakersMap).forEach(([key, sp]) => {
+                    const opt = document.createElement("div");
+                    opt.className = "sp-option";
+                    opt.innerHTML = `<span class="sp-dot" style="background:${sp.color};"></span> ${sp.label}`;
+                    opt.addEventListener("click", (e2) => {
+                        e2.stopPropagation();
+                        changeCueSpeaker(cueId, key);
+                        dropdown.remove();
+                    });
+                    dropdown.appendChild(opt);
+                });
+                document.body.appendChild(dropdown);
+                const closeDropdown = (e2) => {
+                    if (!dropdown.contains(e2.target) && e2.target !== el) {
+                        dropdown.remove();
+                        document.removeEventListener("click", closeDropdown);
+                    }
+                };
+                setTimeout(() => document.addEventListener("click", closeDropdown), 50);
+            }
+
+            function changeCueSpeaker(cueId, speakerKey) {
+                const cue = cues.find(c => c.id === cueId);
+                if (!cue) return;
+                const oldSpeaker = extractSpeaker(cue.text);
+                const cleanText = oldSpeaker ? stripSpeaker(cue.text) : cue.text;
+                if (speakerKey) {
+                    const isNew = !speakersMap[speakerKey];
+                    ensureSpeaker(speakerKey);
+                    cue.text = `${speakerKey}: ${cleanText}`;
+                    if (isNew && projectId) {
+                        apiCall("POST", "/api/speakers", { project_id: projectId, speakersMap: speakersMap });
+                        logDebug(`Nouveau locuteur ajoute: ${speakerKey}`, "event");
+                    }
+                } else {
+                    cue.text = cleanText;
+                }
+                renderCues();
+                renderLyrics();
+                if (currentCueId === cueId) {
+                    elements.cueText.value = cleanText;
+                    rebuildSpeakerSelect();
+                    if (speakerKey) elements.cueSpeaker.value = speakerKey;
+                    else elements.cueSpeaker.value = "";
+                }
+                saveToHistory();
+                logDebug(`Speaker change: cue ${cueId} → ${speakerKey || "none"}`, "event");
+            }
+
+            function rebuildSpeakerSelect() {
+                const sel = elements.cueSpeaker;
+                if (!sel) return;
+                const currentVal = sel.value;
+                sel.innerHTML = '<option value="">— Aucun locuteur —</option>';
+                Object.entries(speakersMap).forEach(([key, sp]) => {
+                    const opt = document.createElement("option");
+                    opt.value = key;
+                    opt.textContent = sp.label;
+                    sel.appendChild(opt);
+                });
+                sel.value = currentVal;
             }
 
             function generateRandomColor() {
@@ -3585,83 +4241,20 @@
                 }
             }
 
+            // V4 — saveToLocalStorage replaced by saveToServer (API)
             function saveToLocalStorage() {
-                try {
-                    // V2.2 - Save current track's cues before saving
-                    const currentTrack = getCurrentTrack();
-                    if (currentTrack) {
-                        currentTrack.cues = JSON.parse(JSON.stringify(cues));
-                    }
-
-                    const data = {
-                        cues: cues,
-                        speakersMap: speakersMap,
-                        audioFileName: audioFile ? audioFile.name : null,
-                        timestamp: Date.now(),
-                        // V2.2 - Save markers and tracks
-                        markers: markers,
-                        tracks: tracks,
-                        currentTrackId: currentTrackId,
-                    };
-                    localStorage.setItem("vtt-editor-data", JSON.stringify(data));
-                } catch (e) {
-                    console.error("LocalStorage save failed:", e);
-                }
+                saveToServer();
             }
 
+            // V4 — loadFromLocalStorage replaced by loadFromServer
+            let _sessionAlreadyLoaded = false;
             function loadFromLocalStorage() {
-                try {
-                    const data = localStorage.getItem("vtt-editor-data");
-                    if (data) {
-                        const parsed = JSON.parse(data);
-
-                        // Count the items to be loaded
-                        const cuesCount = (parsed.cues && parsed.cues.length) || 0;
-                        const markersCount = (parsed.markers && parsed.markers.length) || 0;
-                        const tracksCount = (parsed.tracks && parsed.tracks.length) || 0;
-
-                        if (cuesCount > 0 || markersCount > 0 || tracksCount > 0) {
-                            let message = `💾 Saved data found:\n`;
-                            if (cuesCount > 0) message += `- ${cuesCount} cues\n`;
-                            if (markersCount > 0) message += `- ${markersCount} markers\n`;
-                            if (tracksCount > 0) message += `- ${tracksCount} tracks\n`;
-                            message += `\nLoad?`;
-                            const confirmLoad = confirm(message);
-                            if (confirmLoad) {
-                                // V2.2 - Load tracks first
-                                if (parsed.tracks && parsed.tracks.length > 0) {
-                                    tracks = parsed.tracks;
-                                    currentTrackId = parsed.currentTrackId || "default";
-                                    renderTrackSelector();
-                                }
-
-                                // Load cues
-                                if (parsed.speakersMap) {
-                                    speakersMap = parsed.speakersMap;
-                                }
-                                if (parsed.cues) {
-                                    cues = parsed.cues;
-                                    rebuildRegions();
-                                    renderCues();
-                                    renderLyrics();
-                                    saveToHistory();
-                                }
-
-                                // V2.2 - Load markers
-                                if (parsed.markers && parsed.markers.length > 0) {
-                                    markers = parsed.markers;
-                                    markerIdCounter = Math.max(...markers.map((m) => parseInt(m.id.split("-")[1]) || 0)) + 1;
-                                    renderAllMarkers();
-                                    updateMarkerButtons();
-                                }
-
-                                showToast("💾 Données restaurées", "success");
-                            }
-                        }
-                    }
-                } catch (e) {
-                    console.error("LocalStorage load failed:", e);
+                if (_sessionAlreadyLoaded) {
+                    logDebug("loadFromLocalStorage: session deja chargee, skip", "event");
+                    return;
                 }
+                _sessionAlreadyLoaded = true;
+                loadFromServer();
             }
 
             function startAutoSave() {
@@ -4394,7 +4987,7 @@
                     const speakerLabel = cueSpeaker ? getSpeakerLabel(cueSpeaker) : null;
                     const speakerColor = cueSpeaker ? getSpeakerColor(cueSpeaker) : null;
                     const speakerBadge = speakerLabel
-                        ? `<span style="background:${speakerColor}22;color:${speakerColor};border:1px solid ${speakerColor}55;border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;margin-right:6px;">${speakerLabel}</span>`
+                        ? `<span class="speaker-badge" style="background:${speakerColor}22;color:${speakerColor};border:1px solid ${speakerColor}55;border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;margin-right:6px;cursor:pointer;">${speakerLabel}</span>`
                         : "";
 
                     cueEl.innerHTML = `
@@ -6612,251 +7205,141 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
             // ===== END V3.0 FEATURES =====
 
-            elements.audioUpload.addEventListener("change", (e) => {
+            // V4 — Audio upload via server
+            elements.audioUpload.addEventListener("change", async (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
 
                 audioFile = file;
+                logDebug(`Upload audio: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)} MB)`, "event");
 
-                if (!wavesurfer) {
-                    initWaveSurfer();
+                const formData = new FormData();
+                formData.append("file", file);
+                const result = await apiCall("POST", "/api/upload/audio", formData);
+
+                if (!result.ok) {
+                    showToast(result.data?.error || "Erreur upload audio", "error");
+                    return;
                 }
 
-                const url = URL.createObjectURL(file);
-                wavesurfer.load(url);
+                projectId = result.data.project_id;
+                logDebug(`Project created: ${projectId}, duration=${result.data.duration?.toFixed(1)}s`, "event");
+                showToast(`✅ Audio charge — Projet: ${projectId}`, "success");
+
+                if (!wavesurfer) initWaveSurfer();
+                const audioUrl = `/uploads/${projectId}/audio.${result.data.format}`;
+                wavesurfer.load(audioUrl);
 
                 cues = [];
                 clearAllRegions();
                 renderCues();
                 renderLyrics();
+                rebuildSpeakerSelect();
                 clearForm();
                 history = [];
                 historyIndex = -1;
                 saveToHistory();
-                showToast(`MP3 loaded: ${file.name}`, "success");
+                updateGuideSteps(1);
             });
+
+            // V4 — Handle subtitle upload via server API
+            async function handleSubtitleUpload(file, format) {
+                if (!projectId) {
+                    showToast("⚠️ Chargez d'abord un fichier audio", "error");
+                    return;
+                }
+                if (!wavesurfer || !regionsPlugin) {
+                    showToast("⚠️ Attendez le chargement de l'audio", "error");
+                    return;
+                }
+                logDebug(`Upload ${format}: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`, "event");
+                let content;
+                try {
+                    content = await file.text();
+                } catch (err) {
+                    logDebug(`Erreur lecture fichier ${format}: ${err.message}`, "error");
+                    showToast(`❌ Impossible de lire le fichier ${format.toUpperCase()}`, "error");
+                    return;
+                }
+                logDebug(`Fichier ${format} lu: ${content.length} caracteres`, "event");
+                const result = await apiCall("POST", "/api/upload/srt", {
+                    project_id: projectId,
+                    content: content,
+                    format: format,
+                });
+                if (!result.ok) {
+                    showToast(result.data?.error || `Erreur import ${format.toUpperCase()}`, "error");
+                    logDebug(`Echec import ${format}: ${result.data?.error || result.status}`, "error");
+                    return;
+                }
+                const d = result.data;
+                if (d.cues && d.cues.length > 0) {
+                    cues = d.cues;
+                    if (d.speakers_map) speakersMap = d.speakers_map;
+                    rebuildRegions();
+                    sortCues();
+                    renderCues();
+                    renderLyrics();
+                    rebuildSpeakersFromCues();
+                    rebuildSpeakerSelect();
+                    saveToHistory();
+                    updateGuideSteps(2);
+                    showToast(`✅ ${d.cues.length} segments importes`, "success");
+                    logDebug(`Import ${format} OK: ${d.cues.length} cues, ${Object.keys(d.speakers_map || {}).length} speakers, ${(d.warnings || []).length} warnings`, "event");
+                } else {
+                    showToast("⚠️ Aucun segment trouve dans le fichier", "warning");
+                    logDebug(`Import ${format}: fichier vide ou aucun segment parsable`, "event");
+                }
+                if (d.stats) showImportReport(d.stats, d.warnings || []);
+            }
 
             elements.vttUpload.addEventListener("change", (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
-
-                // V2.2 - Check if audio is loaded first
-                if (!wavesurfer || !regionsPlugin) {
-                    showToast("⚠️ Import an audio file (MP3) before the VTT!", "error");
-                    e.target.value = "";
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    try {
-                        const content = event.target.result;
-                        const parsedCues = parseVTT(content);
-
-                        if (parsedCues.length === 0) {
-                            showToast("No cue found in the VTT", "error");
-                            return;
-                        }
-
-                        cues = parsedCues;
-                        rebuildRegions();
-                        sortCues();
-                        renderCues();
-                        renderLyrics();
-                        rebuildSpeakersFromCues();
-                        saveToHistory();
-                        showToast(`${parsedCues.length} cues imported from VTT`, "success");
-                    } catch (err) {
-                        showToast("Error during VTT import", "error");
-                        console.error(err);
-                    }
-                };
-                reader.readAsText(file);
-
+                handleSubtitleUpload(file, "vtt");
                 e.target.value = "";
-                closeImportDropdown();
             });
 
-            // V2.2 - Import SRT
             elements.srtUpload.addEventListener("change", (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
-
-                // Check if audio is loaded first
-                if (!wavesurfer || !regionsPlugin) {
-                    showToast("⚠️ Import an audio file (MP3) before the SRT!", "error");
-                    e.target.value = "";
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    try {
-                        const content = event.target.result;
-                        const parsedCues = parseSRT(content);
-
-                        if (parsedCues.length === 0) {
-                            showToast("⚠️ Aucun segment trouvé dans le SRT", "error");
-                            return;
-                        }
-
-                        cues = parsedCues;
-                        rebuildRegions();
-                        sortCues();
-                        renderCues();
-                        renderLyrics();
-                        saveToHistory();
-                        showToast(`✅ ${parsedCues.length} segments importés depuis le SRT`, "success");
-                        rebuildSpeakersFromCues();
-                        updateGuideSteps(2); // Guide : SRT importé
-                    } catch (err) {
-                        showToast("❌ Erreur lors de l'import SRT", "error");
-                        console.error(err);
-                    }
-                };
-                reader.readAsText(file);
-
+                handleSubtitleUpload(file, "srt");
                 e.target.value = "";
                 closeImportDropdown();
             });
 
-            // V3.0 - Import ASS
+            // V4 — Import ASS, SBV, DFXP via server
             elements.assUpload.addEventListener("change", (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
-
-                if (!wavesurfer || !regionsPlugin) {
-                    showToast("⚠️ Import an audio file (MP3) before the ASS!", "error");
-                    e.target.value = "";
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    try {
-                        const content = event.target.result;
-                        const parsedCues = parseASS(content);
-
-                        if (parsedCues.length === 0) {
-                            showToast("No cue found in the ASS", "error");
-                            return;
-                        }
-
-                        cues = parsedCues;
-                        rebuildRegions();
-                        sortCues();
-                        renderCues();
-                        renderLyrics();
-                        saveToHistory();
-                        showToast(`${parsedCues.length} cues imported from ASS`, "success");
-                    } catch (err) {
-                        showToast("Error during ASS import", "error");
-                        console.error(err);
-                    }
-                };
-                reader.readAsText(file);
-
+                handleSubtitleUpload(file, "ass");
                 e.target.value = "";
                 closeImportDropdown();
             });
-
-            // V3.0 - Import SBV
             elements.sbvUpload.addEventListener("change", (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
-
-                if (!wavesurfer || !regionsPlugin) {
-                    showToast("⚠️ Import an audio file (MP3) before the SBV!", "error");
-                    e.target.value = "";
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    try {
-                        const content = event.target.result;
-                        const parsedCues = parseSBV(content);
-
-                        if (parsedCues.length === 0) {
-                            showToast("No cue found in the SBV", "error");
-                            return;
-                        }
-
-                        cues = parsedCues;
-                        rebuildRegions();
-                        sortCues();
-                        renderCues();
-                        renderLyrics();
-                        saveToHistory();
-                        showToast(`${parsedCues.length} cues imported from SBV`, "success");
-                    } catch (err) {
-                        showToast("Error during SBV import", "error");
-                        console.error(err);
-                    }
-                };
-                reader.readAsText(file);
-
+                handleSubtitleUpload(file, "sbv");
                 e.target.value = "";
                 closeImportDropdown();
             });
-
-            // V3.0 - Import DFXP/TTML
             elements.dfxpUpload.addEventListener("change", (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
-
-                if (!wavesurfer || !regionsPlugin) {
-                    showToast("⚠️ Import an audio file (MP3) before the DFXP!", "error");
-                    e.target.value = "";
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    try {
-                        const content = event.target.result;
-                        const parsedCues = parseDFXP(content);
-
-                        if (parsedCues.length === 0) {
-                            showToast("No cue found in the DFXP", "error");
-                            return;
-                        }
-
-                        cues = parsedCues;
-                        rebuildRegions();
-                        sortCues();
-                        renderCues();
-                        renderLyrics();
-                        saveToHistory();
-                        showToast(`${parsedCues.length} cues imported from DFXP`, "success");
-                    } catch (err) {
-                        showToast("Error during DFXP import", "error");
-                        console.error(err);
-                    }
-                };
-                reader.readAsText(file);
-
+                handleSubtitleUpload(file, "dfxp");
                 e.target.value = "";
                 closeImportDropdown();
             });
-
-            // V3.0 - Import JSON
             elements.jsonUpload.addEventListener("change", (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
-
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    const content = event.target.result;
-                    if (importJSON(content)) {
-                        showToast("JSON backup imported successfully!", "success");
-                    }
-                };
-                reader.readAsText(file);
-
+                handleSubtitleUpload(file, "json");
                 e.target.value = "";
                 closeImportDropdown();
             });
+
+            // ═══════════════════════════════════════════════
+            // V3.0 — Keyboard shortcut: Ctrl+F for search focus
 
             // V3.0 - Import dropdown toggle
             elements.importDropdownBtn.addEventListener("click", (e) => {
@@ -7048,14 +7531,29 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             });
 
             document.addEventListener("keydown", (e) => {
-                if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") {
-                    if (e.ctrlKey && e.key === "Enter") {
+                // V4 — Allow Enter in TEXTAREA for validate+next
+                if (e.target.tagName === "TEXTAREA") {
+                    if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
                         e.preventDefault();
                         if (currentCueId) {
                             updateCue();
-                        } else {
-                            addCue();
+                            nextCue();
                         }
+                    }
+                    return;
+                }
+
+                if (e.target.tagName === "INPUT") {
+                    if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
+                        e.preventDefault();
+                        if (currentCueId) {
+                            updateCue();
+                            nextCue();
+                        }
+                    }
+                    if (e.ctrlKey && e.key === "Enter") {
+                        e.preventDefault();
+                        if (currentCueId) updateCue(); else addCue();
                     }
                     return;
                 }
@@ -7089,25 +7587,47 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
                         break;
                     case "ArrowLeft":
                         e.preventDefault();
-                        if (wavesurfer) {
-                            const time = Math.max(wavesurfer.getCurrentTime() - 1, 0);
-                            wavesurfer.seekTo(time / wavesurfer.getDuration());
+                        if (currentCueId) {
+                            previousCue();
+                        } else if (wavesurfer) {
+                            const t = Math.max(wavesurfer.getCurrentTime() - 1, 0);
+                            wavesurfer.seekTo(t / wavesurfer.getDuration());
                         }
                         break;
                     case "ArrowRight":
                         e.preventDefault();
-                        if (wavesurfer) {
-                            const time = Math.min(wavesurfer.getCurrentTime() + 1, wavesurfer.getDuration());
-                            wavesurfer.seekTo(time / wavesurfer.getDuration());
+                        if (currentCueId || cues.length > 0) {
+                            nextCue();
+                        } else if (wavesurfer) {
+                            const t = Math.min(wavesurfer.getCurrentTime() + 1, wavesurfer.getDuration());
+                            wavesurfer.seekTo(t / wavesurfer.getDuration());
+                        }
+                        break;
+                    case "KeyC":
+                        if (!e.ctrlKey && !e.metaKey) {
+                            e.preventDefault();
+                            splitCueAtCursor();
+                        }
+                        break;
+                    case "Escape":
+                        e.preventDefault();
+                        clearForm();
+                        showToast("Edition annulee", "info");
+                        break;
+                    case "Enter":
+                        e.preventDefault();
+                        if (currentCueId) {
+                            updateCue();
+                            nextCue();
+                        } else {
+                            addCue();
                         }
                         break;
                     case "Delete":
                         e.preventDefault();
                         if (activeRegion) {
                             const cue = cues.find((c) => c.id === activeRegion.id);
-                            if (cue) {
-                                deleteCue(cue.id);
-                            }
+                            if (cue) deleteCue(cue.id);
                         }
                         break;
                 }
@@ -7283,6 +7803,200 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
                     showToast("🔁 Lecture depuis -2s", "info");
                 });
             }
+
+            // ═══════════════════════════════════════════════
+            // V4 — New event listeners
+            // ═══════════════════════════════════════════════
+
+            // Debug panel
+            if (elements.debugBtn) {
+                elements.debugBtn.addEventListener("click", () => {
+                    elements.debugPanel.classList.toggle("open");
+                    if (elements.debugPanel.classList.contains("open")) {
+                        elements.debugStatus.textContent = "Polling...";
+                        startServerLogPolling();
+                    } else {
+                        stopServerLogPolling();
+                        elements.debugStatus.textContent = "";
+                    }
+                });
+            }
+            if (elements.debugClose) {
+                elements.debugClose.addEventListener("click", () => {
+                    elements.debugPanel.classList.remove("open");
+                    stopServerLogPolling();
+                    elements.debugStatus.textContent = "";
+                });
+            }
+            if (elements.debugCopy) {
+                elements.debugCopy.addEventListener("click", () => {
+                    const text = debugLogs.map(l => `[${l.ts}] ${l.msg}`).join("\n");
+                    navigator.clipboard.writeText(text).then(() => showToast("Logs copies !", "info"));
+                });
+            }
+            if (elements.debugClear) {
+                elements.debugClear.addEventListener("click", () => {
+                    debugLogs = [];
+                    elements.debugBody.innerHTML = "";
+                    elements.debugCount.textContent = "0";
+                });
+            }
+
+            function startServerLogPolling() {
+                if (serverPollInterval) return;
+                serverPollInterval = setInterval(async () => {
+                    const result = await apiCall("GET", "/api/debug/logs?limit=50");
+                    if (result.ok && result.data && result.data.logs) {
+                        result.data.logs.forEach(l => {
+                            const line = document.createElement("div");
+                            line.className = "debug-log-line debug-log-server";
+                            line.textContent = l;
+                            elements.debugBody.appendChild(line);
+                        });
+                        elements.debugBody.scrollTop = elements.debugBody.scrollHeight;
+                        elements.debugStatus.textContent = `Logs: ${result.data.logs.length}`;
+                    }
+                }, 2000);
+            }
+
+            function stopServerLogPolling() {
+                if (serverPollInterval) { clearInterval(serverPollInterval); serverPollInterval = null; }
+            }
+
+            // Import report close
+            if (elements.closeImportReport) {
+                elements.closeImportReport.addEventListener("click", () => {
+                    elements.importReport.classList.remove("open");
+                });
+            }
+
+            // Split at cursor button
+            if (elements.splitCueBtn) {
+                elements.splitCueBtn.addEventListener("click", () => splitCueAtCursor());
+            }
+
+            // Shift following button
+            if (elements.shiftFollowingBtn) {
+                elements.shiftFollowingBtn.addEventListener("click", () => {
+                    if (!currentCueId) { showToast("Selectionnez un segment", "warning"); return; }
+                    const offset = parseFloat(prompt("Decalage en secondes (+ ou -) :", "1.0"));
+                    if (isNaN(offset) || offset === 0) return;
+                    const idx = cues.findIndex(c => c.id === currentCueId);
+                    if (idx < 0) return;
+                    const count = cues.length - idx;
+                    if (!confirm(`Decaler ${count} segments de ${offset > 0 ? "+" : ""}${offset}s ?`)) return;
+                    for (let i = idx; i < cues.length; i++) {
+                        cues[i].start = round3(Math.max(0, cues[i].start + offset));
+                        cues[i].end = round3(Math.max(cues[i].start + 0.1, cues[i].end + offset));
+                    }
+                    sortCues();
+                    rebuildRegions();
+                    renderCues();
+                    renderLyrics();
+                    saveToHistory();
+                    showToast(`✅ ${count} segments decales`, "success");
+                    logDebug(`Shift following from #${idx + 1} by ${offset}s (${count} cues)`, "event");
+                });
+            }
+
+            // Nudge buttons
+            const nudgePairs = [
+                ["start", -1, "nudgeStartMinus1s"],
+                ["start", -0.5, "nudgeStartMinus500ms"],
+                ["start", -0.1, "nudgeStartMinus100ms"],
+                ["start", 0.1, "nudgeStartPlus100ms"],
+                ["start", 0.5, "nudgeStartPlus500ms"],
+                ["start", 1, "nudgeStartPlus1s"],
+                ["end", -1, "nudgeEndMinus1s"],
+                ["end", -0.5, "nudgeEndMinus500ms"],
+                ["end", -0.1, "nudgeEndMinus100ms"],
+                ["end", 0.1, "nudgeEndPlus100ms"],
+                ["end", 0.5, "nudgeEndPlus500ms"],
+                ["end", 1, "nudgeEndPlus1s"],
+            ];
+            nudgePairs.forEach(([side, delta, elemKey]) => {
+                const btn = elements[elemKey];
+                if (!btn) return;
+                btn.addEventListener("click", () => {
+                    if (!currentCueId) return;
+                    const cue = cues.find(c => c.id === currentCueId);
+                    if (!cue) return;
+                    if (side === "start") {
+                        const ns = round3(Math.max(0, cue.start + delta));
+                        if (ns < cue.end) {
+                            cue.start = ns;
+                            elements.cueStart.value = ns.toFixed(3);
+                            updateRegion(cue.id, ns, cue.end, cue.color);
+                            sortCues();
+                            renderCues();
+                            renderLyrics();
+                            saveToHistory();
+                            logDebug(`Nudge start ${delta > 0 ? "+" : ""}${delta}s → ${ns.toFixed(3)}`, "event");
+                        }
+                    } else {
+                        const ne = round3(Math.max(cue.start + 0.1, cue.end + delta));
+                        if (ne > cue.start) {
+                            cue.end = ne;
+                            elements.cueEnd.value = ne.toFixed(3);
+                            updateRegion(cue.id, cue.start, ne, cue.color);
+                            sortCues();
+                            renderCues();
+                            renderLyrics();
+                            saveToHistory();
+                            logDebug(`Nudge end ${delta > 0 ? "+" : ""}${delta}s → ${ne.toFixed(3)}`, "event");
+                        }
+                    }
+                });
+            });
+
+            // Inline speaker change via badge click in cue list
+            document.addEventListener("click", (e) => {
+                const badge = e.target.closest(".speaker-badge");
+                if (!badge) return;
+                const cueId = badge.closest(".cue-item")?.dataset?.cueId;
+                if (cueId) showSpeakerInlineDropdown(cueId, badge, e);
+            });
+
+            // Speaker select in form triggers text update
+            if (elements.cueSpeaker) {
+                elements.cueSpeaker.addEventListener("change", () => {
+                    if (!currentCueId) return;
+                    const cue = cues.find(c => c.id === currentCueId);
+                    if (!cue) return;
+                    const speakerKey = elements.cueSpeaker.value;
+                    const cleanText = extractSpeaker(cue.text) ? stripSpeaker(cue.text) : cue.text;
+                    if (speakerKey) {
+                        ensureSpeaker(speakerKey);
+                        cue.text = `${speakerKey}: ${cleanText}`;
+                        elements.cueText.value = cleanText;
+                    } else {
+                        cue.text = cleanText;
+                    }
+                    renderCues();
+                    saveToHistory();
+                });
+            }
+
+            // Update nudge buttons state when cue is selected/deselected
+            const origSelectCueByRegion = selectCueByRegion;
+            selectCueByRegion = function(region) {
+                origSelectCueByRegion(region);
+                updateNudgeButtons();
+                updateAdvancedEditButtons();
+            };
+            const origClearForm = clearForm;
+            clearForm = function() {
+                origClearForm();
+                updateNudgeButtons();
+                updateAdvancedEditButtons();
+            };
+
+            // Load session from server on page load
+            window.addEventListener("load", () => {
+                logDebug("Page loaded, checking server session...", "event");
+                loadFromLocalStorage();
+                logDebug("Init terminee — pret pour upload audio", "event");
+            });
 
         </script>
     </body>

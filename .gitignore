@@ -1,0 +1,12 @@
+# Fichiers runtime serveur
+.server.pid
+.server.log
+uploads/
+
+# Documentation interne (pas sur GitHub)
+docs/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
