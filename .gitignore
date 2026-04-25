@@ -3,6 +3,9 @@
 .server.log
 uploads/
 
+# Tests (fichiers volumineux, pas sur GitHub)
+tests/
+
 # Documentation interne (pas sur GitHub)
 docs/
 
