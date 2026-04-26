@@ -913,7 +913,6 @@
                 display: grid;
                 grid-template-columns: 400px 1fr 350px;
                 gap: 20px;
-                overflow: hidden;
                 min-height: 0; /* Allow flex child to shrink */
             }
 
@@ -1018,8 +1017,9 @@
                 border-radius: 10px;
                 padding: 20px;
                 border: 1px solid #282828;
-                overflow-y: auto;
-                min-height: 0;
+                position: sticky;
+                top: 20px;
+                align-self: start;
             }
 
             .cue-editor h3 {
@@ -1132,7 +1132,6 @@
                 border: 1px solid #282828;
                 display: flex;
                 flex-direction: column;
-                min-height: 0; /* Flex child: allow shrink below content */
             }
 
             .cues-header {
@@ -1145,9 +1144,6 @@
 
             .cues-list {
                 flex: 1;
-                min-height: 0;
-                overflow-y: auto;
-                overflow-x: hidden;
                 padding-right: 4px;
             }
 
@@ -1176,13 +1172,9 @@
 
             .cues-list {
                 flex: 1;
-                overflow-y: auto;
-                overflow-x: hidden; /* V3.0 - No horizontal scroll */
                 display: flex;
                 flex-direction: column;
                 gap: 10px;
-                max-height: calc(100vh - 600px);
-                min-height: 300px;
             }
 
             .no-cues {
@@ -1221,8 +1213,20 @@
             }
 
             .cue-item.active {
-                border-color: var(--cue-color, #1db954);
-                background: rgba(29, 185, 84, 0.1);
+                border-color: var(--accent, #1db954) !important;
+                background: #2a2a2a;
+                box-shadow: 0 0 15px var(--accent-shadow, rgba(29, 185, 84, 0.3));
+            }
+
+            .cue-item.selected {
+                border-color: #4a9eff !important;
+                background: #1a2530;
+                box-shadow: 0 0 10px rgba(74, 158, 255, 0.25);
+            }
+
+            .cue-item.selected.active {
+                border-color: var(--accent, #1db954) !important;
+                box-shadow: 0 0 15px var(--accent-shadow, rgba(29, 185, 84, 0.3)), 0 0 10px rgba(74, 158, 255, 0.2);
             }
 
             .cue-item.overlap {
@@ -3582,6 +3586,8 @@
             }
 
             let currentCueId = null;
+            let selectedCueIds = new Set();      // V4 — Multi-selection for merge
+            let lastClickedCueIndex = -1;        // V4 — Anchor for Shift+click range
             let isPlaying = false;
             let audioFile = null;
             let activeRegion = null;
@@ -3595,7 +3601,6 @@
             let autoSaveInterval = null;
             let activeLyricId = null;
             let projectId = null;              // V4 — ID du projet actif
-            let selectedForMerge = null;       // V4 — Segment pour fusion
             let debugLogs = [];                // V4 — Logs du panneau debug
             let serverPollInterval = null;     // V4 — Polling logs serveur
             let saveIndicatorTimeout = null;   // V4 — Timeout indicateur sauvegarde
@@ -4181,6 +4186,9 @@
                 if (historyIndex > 0) {
                     historyIndex--;
                     cues = JSON.parse(JSON.stringify(history[historyIndex]));
+                    currentCueId = null;
+                    selectedCueIds.clear();
+                    lastClickedCueIndex = -1;
                     rebuildRegions();
                     renderCues();
                     renderLyrics();
@@ -4194,6 +4202,9 @@
                 if (historyIndex < history.length - 1) {
                     historyIndex++;
                     cues = JSON.parse(JSON.stringify(history[historyIndex]));
+                    currentCueId = null;
+                    selectedCueIds.clear();
+                    lastClickedCueIndex = -1;
                     rebuildRegions();
                     renderCues();
                     renderLyrics();
@@ -4783,6 +4794,10 @@
                 const cue = cues.find((c) => c.id === region.id);
                 if (cue) {
                     currentCueId = cue.id;
+                    selectedCueIds.clear();
+                    selectedCueIds.add(cue.id);
+                    lastClickedCueIndex = cues.findIndex(c => c.id === cue.id);
+
                     elements.cueStart.value = cue.start.toFixed(3);
                     elements.cueEnd.value = cue.end.toFixed(3);
                     elements.cueText.value = cue.text;
@@ -4793,6 +4808,7 @@
                     elements.deleteCurrent.style.display = "block";
                     elements.cancelEdit.style.display = "block";
 
+                    updateAdvancedEditButtons();
                     updateActiveClass();
                 }
             }
@@ -4860,6 +4876,9 @@
                 saveToHistory();
 
                 currentCueId = id;
+                selectedCueIds.clear();
+                selectedCueIds.add(id);
+                lastClickedCueIndex = cues.findIndex(c => c.id === id);
                 elements.cueStart.value = start.toFixed(3);
                 elements.cueEnd.value = end.toFixed(3);
                 elements.cueText.value = "";
@@ -4977,12 +4996,16 @@
             function deleteCue(id) {
                 cues = cues.filter((c) => c.id !== id);
                 deleteRegion(id);
+                selectedCueIds.delete(id);
                 renderCues();
                 renderLyrics();
                 saveToHistory();
                 if (currentCueId === id) {
+                    currentCueId = null;
                     clearForm();
                 }
+                lastClickedCueIndex = -1;
+                updateAdvancedEditButtons();
             }
 
             function deleteCurrentCue() {
@@ -4997,6 +5020,9 @@
                 updateGuideSteps(2); // Guide : en cours de correction
 
                 currentCueId = id;
+                selectedCueIds.clear();
+                selectedCueIds.add(id);
+                lastClickedCueIndex = cues.findIndex(c => c.id === id);
                 activeRegion = regionsPlugin.getRegions().find((r) => r.id === id);
 
                 elements.cueStart.value = cue.start.toFixed(3);
@@ -5071,6 +5097,8 @@
 
             function clearForm() {
                 currentCueId = null;
+                selectedCueIds.clear();
+                lastClickedCueIndex = -1;
                 activeRegion = null;
                 elements.cueStart.value = "";
                 elements.cueEnd.value = "";
@@ -5092,12 +5120,10 @@
 
             function updateActiveClass() {
                 document.querySelectorAll(".cue-item").forEach((item) => {
-                    if (item.dataset.cueId === currentCueId) {
-                        item.classList.add("active");
-                    } else {
-                        item.classList.remove("active");
-                    }
+                    item.classList.toggle("active", item.dataset.cueId === currentCueId);
+                    item.classList.toggle("selected", selectedCueIds.has(item.dataset.cueId));
                 });
+                updateAdvancedEditButtons();
             }
 
             function sortCues() {
@@ -5132,6 +5158,9 @@
 
                     if (cue.id === currentCueId) {
                         cueEl.classList.add("active");
+                    }
+                    if (selectedCueIds.has(cue.id)) {
+                        cueEl.classList.add("selected");
                     }
 
                     if (overlaps.includes(cue.id)) {
@@ -5172,10 +5201,11 @@
                         <div style="margin:4px 0 2px;">${speakerBadge}</div>
                         <div class="cue-text">${cueTextPure || '<i style="color:#666;">Pas de texte</i>'}</div>
                         <div class="cue-actions-row">
-                            <button class="btn btn-secondary play-cue" title="Écouter">▶️</button>
+                            <button class="btn btn-secondary play-cue" title="Ecouter">▶️</button>
                             <button class="btn btn-secondary edit-cue" title="Corriger le texte">✏️</button>
                             <button class="btn btn-secondary speaker-cue" title="Changer le locuteur">🎤</button>
                             <button class="btn btn-secondary timing-cue" title="Ajuster le timing">⏱️</button>
+                            <button class="btn btn-secondary split-cue" title="Couper au curseur">✂️</button>
                             <button class="btn btn-danger delete-cue" title="Supprimer">🗑️</button>
                         </div>
                     `;
@@ -5211,9 +5241,36 @@
                         deleteCue(cue.id);
                     });
 
-                    cueEl.addEventListener("click", () => {
+                    cueEl.querySelector(".split-cue").addEventListener("click", (e) => {
+                        e.stopPropagation();
                         pausePlayback();
                         editCue(cue.id);
+                        const mid = (cue.start + cue.end) / 2;
+                        const dur = wavesurfer.getDuration();
+                        if (dur > 0) wavesurfer.seekTo(mid / dur);
+                        setTimeout(() => splitCue(), 80);
+                    });
+
+                    cueEl.addEventListener("click", (e) => {
+                        pausePlayback();
+                        if (e.shiftKey && lastClickedCueIndex >= 0) {
+                            const lo = Math.min(lastClickedCueIndex, index);
+                            const hi = Math.max(lastClickedCueIndex, index);
+                            for (let i = lo; i <= hi; i++) {
+                                selectedCueIds.add(cues[i].id);
+                            }
+                            lastClickedCueIndex = index;
+                        } else if (e.ctrlKey || e.metaKey) {
+                            if (selectedCueIds.has(cue.id)) {
+                                selectedCueIds.delete(cue.id);
+                            } else {
+                                selectedCueIds.add(cue.id);
+                            }
+                            lastClickedCueIndex = index;
+                        } else {
+                            editCue(cue.id);
+                        }
+                        updateActiveClass();
                     });
 
                     elements.cuesList.appendChild(cueEl);
@@ -5264,6 +5321,9 @@
                 if (confirm("⚠️ Delete ALL cues and regions?")) {
                     cues = [];
                     clearAllRegions();
+                    selectedCueIds.clear();
+                    currentCueId = null;
+                    lastClickedCueIndex = -1;
                     renderCues();
                     renderLyrics();
                     clearForm();
@@ -6384,6 +6444,9 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
                 // Select the second cue for editing
                 currentCueId = cue2.id;
+                selectedCueIds.clear();
+                selectedCueIds.add(cue2.id);
+                lastClickedCueIndex = cues.findIndex(c => c.id === cue2.id);
                 elements.cueStart.value = cue2.start.toFixed(3);
                 elements.cueEnd.value = cue2.end.toFixed(3);
                 elements.cueText.value = cue2.text;
@@ -6406,52 +6469,72 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
             // Feature 10: Merge two consecutive cues
             function mergeCues() {
-                if (!currentCueId) {
-                    showToast("Select a cue to merge with the next one", "warning");
+                if (selectedCueIds.size < 2) {
+                    showToast("Select at least 2 cues to merge (Shift+click or Ctrl+click)", "warning");
                     return;
                 }
 
-                const currentIndex = cues.findIndex((c) => c.id === currentCueId);
-                if (currentIndex === -1) {
-                    showToast("Cue not found", "error");
-                    return;
+                const indices = [];
+                cues.forEach((c, i) => {
+                    if (selectedCueIds.has(c.id)) indices.push(i);
+                });
+                indices.sort((a, b) => a - b);
+
+                const firstIdx = indices[0];
+                const lastIdx = indices[indices.length - 1];
+
+                const allBetween = [];
+                for (let i = firstIdx; i <= lastIdx; i++) {
+                    if (!selectedCueIds.has(cues[i].id)) {
+                        if (!confirm(`${indices.length} cues selected but cue #${i + 1} is in between. Include it?`)) {
+                            return;
+                        }
+                        break;
+                    }
+                    allBetween.push(i);
                 }
+                // If user confirmed to include gap cues, use the full range
+                const idxRange = allBetween.length > indices.length
+                    ? { lo: firstIdx, hi: lastIdx }
+                    : { lo: firstIdx, hi: lastIdx };
 
-                if (currentIndex >= cues.length - 1) {
-                    showToast("No next cue to merge with", "warning");
-                    return;
-                }
+                const cue1 = cues[idxRange.lo];
+                const cue2 = cues[idxRange.hi];
 
-                const cue1 = cues[currentIndex];
-                const cue2 = cues[currentIndex + 1];
-
-                // Check if they are consecutive (gap < 1s)
                 const gap = cue2.start - cue1.end;
                 if (gap > 1) {
-                    if (!confirm(`The cues have a gap of ${gap.toFixed(2)}s. Merge anyway?`)) {
+                    if (!confirm(`The selected cues have a gap of ${gap.toFixed(2)}s. Merge anyway?`)) {
                         return;
                     }
                 }
 
-                // Create merged cue
+                const texts = [];
+                for (let i = idxRange.lo; i <= idxRange.hi; i++) {
+                    if (cues[i].text) texts.push(cues[i].text);
+                }
+
                 const mergedCue = {
                     id: generateCueId(),
                     start: cue1.start,
                     end: cue2.end,
-                    text: cue1.text + (cue1.text && cue2.text ? "\n" : "") + cue2.text,
+                    text: texts.join("\n"),
                     color: cue1.color,
                 };
 
                 // Remove old cues and add merged
-                cues.splice(currentIndex, 2, mergedCue);
+                const deleteCount = idxRange.hi - idxRange.lo + 1;
+                for (let i = idxRange.lo; i <= idxRange.hi; i++) {
+                    deleteRegion(cues[i].id);
+                }
+                cues.splice(idxRange.lo, deleteCount, mergedCue);
 
-                // Update regions
-                deleteRegion(cue1.id);
-                deleteRegion(cue2.id);
                 createRegion(mergedCue.start, mergedCue.end, mergedCue.color, mergedCue.id);
 
-                // Select merged cue
+                selectedCueIds.clear();
+                selectedCueIds.add(mergedCue.id);
                 currentCueId = mergedCue.id;
+                lastClickedCueIndex = cues.findIndex(c => c.id === mergedCue.id);
+
                 elements.cueStart.value = mergedCue.start.toFixed(3);
                 elements.cueEnd.value = mergedCue.end.toFixed(3);
                 elements.cueText.value = mergedCue.text;
@@ -6467,7 +6550,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
                 saveToHistory();
                 updateAdvancedEditButtons();
 
-                showToast("Cues merged!", "success");
+                showToast(`${idxRange.hi - idxRange.lo + 1} cues merged!`, "success");
             }
 
             // Feature 11: Shift All Timings
@@ -6555,10 +6638,9 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             function updateAdvancedEditButtons() {
                 const hasCues = cues.length > 0;
                 const hasSelection = currentCueId !== null;
-                const hasNextCue = hasSelection && cues.findIndex((c) => c.id === currentCueId) < cues.length - 1;
 
                 elements.splitCueBtn.disabled = !hasSelection;
-                elements.mergeCuesBtn.disabled = !hasSelection || !hasNextCue;
+                elements.mergeCuesBtn.disabled = selectedCueIds.size < 2;
                 elements.shiftTimingsBtn.disabled = !hasCues;
             }
 

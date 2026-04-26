@@ -30,6 +30,8 @@ UPLOADS_DIR.mkdir(exist_ok=True)
 
 DEBUG_MODE = True
 MAX_LOG_LINES = 200
+MAX_UPLOAD_MB = 1024
+app.config["MAX_CONTENT_LENGTH"] = MAX_UPLOAD_MB * 1024 * 1024
 
 # ──────────────────────────────────────────────
 # Logging system
@@ -71,6 +73,23 @@ werkzeug_logger.addHandler(log_handler)
 logger.info("SRT Editor Pro server starting")
 
 # ──────────────────────────────────────────────
+# CORS
+# ──────────────────────────────────────────────
+@app.after_request
+def add_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    return response
+
+
+@app.route("/api/<path:path>", methods=["OPTIONS"])
+@app.route("/uploads/<path:path>", methods=["OPTIONS"])
+def handle_options(path):
+    return "", 204
+
+
+# ──────────────────────────────────────────────
 # Helpers
 # ──────────────────────────────────────────────
 
@@ -82,8 +101,46 @@ ALLOWED_SUBTITLE_EXT = {".srt", ".vtt", ".ass", ".ssa", ".sbv"}
 
 
 def sanitize_filename(name: str) -> str:
-    """Remove problematic characters from filename."""
-    return re.sub(r"[^\w\-.]", "_", name)
+    """Remove problematic characters and prevent path traversal."""
+    cleaned = Path(name).name
+    cleaned = re.sub(r"[^\w\-.]", "_", cleaned)
+    cleaned = cleaned.lstrip(".")
+    return cleaned or "untitled"
+
+
+def validate_cues(cues_raw):
+    """Validate and sanitize cue data from client. Returns (clean_cues, skipped)."""
+    import math
+    if not isinstance(cues_raw, list):
+        return [], len(cues_raw) if cues_raw else 0
+    clean = []
+    skipped = 0
+    for cue in cues_raw:
+        if not isinstance(cue, dict):
+            skipped += 1
+            continue
+        start = cue.get("start")
+        end = cue.get("end")
+        if not isinstance(start, (int, float)) or not isinstance(end, (int, float)):
+            skipped += 1
+            continue
+        if math.isnan(start) or math.isnan(end) or math.isinf(start) or math.isinf(end):
+            skipped += 1
+            continue
+        if start > end:
+            skipped += 1
+            continue
+        text = cue.get("text", "")
+        if not isinstance(text, str):
+            text = str(text)
+        clean.append({
+            "id": cue.get("id", ""),
+            "start": round(start, 3),
+            "end": round(end, 3),
+            "text": text,
+            "color": cue.get("color", ""),
+        })
+    return clean, skipped
 
 
 def create_project_dir(base_name: str) -> tuple:
@@ -537,8 +594,12 @@ def save_session():
     if not project_dir.exists():
         return jsonify({"error": "Projet introuvable"}), 404
     
+    cues, skipped = validate_cues(data.get("cues", []))
+    if skipped:
+        logger.warning(f"Save validation: skipped {skipped} invalid cue(s)")
+    
     session_data = {
-        "cues": data.get("cues", []),
+        "cues": cues,
         "markers": data.get("markers", []),
         "tracks": data.get("tracks", [{"id": "default", "name": "Main Track", "cues": [], "color": "#1db954"}]),
         "currentTrackId": data.get("currentTrackId", "default"),
@@ -556,7 +617,7 @@ def save_session():
         speakers_path.write_text(json.dumps(speakers_map, indent=2, ensure_ascii=False))
         logger.debug(f"Speakers saved with session: {len(speakers_map)} entries")
     
-    return jsonify({"status": "ok", "timestamp": session_data["timestamp"]})
+    return jsonify({"status": "ok", "timestamp": session_data["timestamp"], "skipped": skipped})
 
 
 @app.route("/api/speakers", methods=["POST"])
@@ -634,9 +695,13 @@ def export_srt():
     logger.info("POST /api/export/srt")
     
     data = request.get_json(silent=True)
-    cues = data.get("cues", [])
+    cues_raw = data.get("cues", [])
     speakers_map = data.get("speakersMap", {})
     project_id = data.get("project_id")
+    
+    cues, skipped = validate_cues(cues_raw)
+    if skipped:
+        logger.warning(f"Export SRT: skipped {skipped} invalid cue(s)")
     
     if not cues:
         return jsonify({"error": "Aucun cue a exporter"}), 400
@@ -662,7 +727,7 @@ def export_srt():
             export_path.write_text(srt_content, encoding="utf-8")
             logger.info(f"Exported SRT saved: {export_path}")
     
-    return jsonify({"content": srt_content, "filename": "subtitles.srt"})
+    return jsonify({"content": srt_content, "filename": "subtitles.srt", "skipped": skipped})
 
 
 @app.route("/api/export/vtt", methods=["POST"])
@@ -671,8 +736,12 @@ def export_vtt():
     logger.info("POST /api/export/vtt")
     
     data = request.get_json(silent=True)
-    cues = data.get("cues", [])
+    cues_raw = data.get("cues", [])
     project_id = data.get("project_id")
+    
+    cues, skipped = validate_cues(cues_raw)
+    if skipped:
+        logger.warning(f"Export VTT: skipped {skipped} invalid cue(s)")
     
     lines = ["WEBVTT", ""]
     for i, cue in enumerate(cues):
@@ -698,7 +767,7 @@ def export_vtt():
             export_path.write_text(vtt_content, encoding="utf-8")
             logger.info(f"Exported VTT saved: {export_path}")
     
-    return jsonify({"content": vtt_content, "filename": "subtitles.vtt"})
+    return jsonify({"content": vtt_content, "filename": "subtitles.vtt", "skipped": skipped})
 
 
 @app.route("/api/debug/logs", methods=["GET"])
@@ -737,6 +806,13 @@ def format_vtt_time(seconds: float) -> str:
 def not_found(e):
     logger.warning(f"404: {request.path}")
     return jsonify({"error": "Not found"}), 404
+
+
+@app.errorhandler(413)
+def too_large(e):
+    max_mb = app.config.get("MAX_CONTENT_LENGTH", 0) / (1024 * 1024)
+    logger.warning(f"413: Payload too large (max {max_mb:.0f} MB)")
+    return jsonify({"error": f"Fichier trop volumineux (max {max_mb:.0f} MB)"}), 413
 
 
 @app.errorhandler(500)
